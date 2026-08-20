@@ -1,0 +1,25 @@
+# Environment
+.env
+*/.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Node
+node_modules/
+dist/
+
+# Logs
+*.log
+
+# Data / runtime artifacts
+history.db
+uploads/
+*.pdf
+test_result.json
+
+# Editor
+.vscode/
+.idea/

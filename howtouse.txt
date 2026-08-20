@@ -1,0 +1,140 @@
+==========================================================================
+ PortfolioAI — วิธีใช้งานระบบ (อัปเดตหลังแก้ไขปัญหาความปลอดภัย)
+ อัปเดตล่าสุด: 2026-08-19
+==========================================================================
+
+ภาพรวมระบบ
+--------------------------------------------------------------------------
+ระบบนี้ประกอบด้วย 2 ส่วนที่ต้องรันพร้อมกัน:
+
+  1. Python AI Backend (โฟลเดอร์ root: main.py, config.py, services/, models/)
+     - รับ PDF Portfolio → ให้ AI vision (Ollama รุ่น qwen2.5vl:7b) อ่านทีละหน้า
+       → สรุปผลเป็น JSON โครงสร้าง
+     - รันที่ port 8099 (ภายในเท่านั้น — ไม่ต้องเปิดออกอินเทอร์เน็ต)
+     - ต้องมี Ollama รันอยู่ พร้อมโมเดล qwen2.5vl:7b (ตรวจสอบด้วย `ollama list`)
+     - ต้องมี Poppler ติดตั้งไว้ (ใช้แปลง PDF เป็นรูปภาพ) ตาม path ที่ตั้งใน .env
+
+  2. portfolio-reviewer/ — เว็บแอปหลักที่ผู้ใช้เข้าใช้งานจริง (Node.js + React)
+     - มีระบบ login, อัปโหลด/จัดการไฟล์, หน้าแสดงผลวิเคราะห์
+     - Express server (port 3000) เป็นตัวกลางเรียก Python backend ให้ —
+       ฝั่ง browser ของผู้ใช้ "ไม่เคย" เรียก Python backend ตรง ๆ อีกต่อไป
+       (แก้บั๊กนี้แล้ว — เดิมเป็นปัญหาที่จะทำให้ระบบพังทันทีถ้า deploy จริง)
+
+  หมายเหตุ: มีไฟล์ dist/index.html (root) เป็น prototype เดี่ยว ๆ ที่เคยใช้ทดสอบ
+  Python API ตรง ๆ — ไม่ใช่ระบบที่ใช้งานจริง ไม่ต้องรันคู่กับระบบหลัก
+
+
+ก่อนรันครั้งแรก — ติดตั้ง dependencies
+--------------------------------------------------------------------------
+  Python (แนะนำ Python 3.11+):
+      pip install -r requirements.txt
+
+  Node.js (ต้องติดตั้งครั้งเดียว หรือทุกครั้งที่ package.json เปลี่ยน):
+      cd portfolio-reviewer
+      npm install
+
+
+การรันแบบพัฒนา/ทดสอบในเครื่อง (Local Development)
+--------------------------------------------------------------------------
+  1) เปิด terminal แรก — รัน Python AI backend:
+        cd C:\ollama
+        python main.py
+     ตรวจสอบว่าใช้งานได้: curl http://localhost:8099/health
+
+  2) เปิด terminal ที่สอง — รันเว็บแอปหลัก (frontend + backend พร้อมกัน):
+        cd C:\ollama\portfolio-reviewer
+        npm run dev:all
+     เปิดเบราว์เซอร์ไปที่ http://localhost:5173
+
+  3) Login เข้าระบบ
+        Username: admin
+        Password: admin   (ค่า default — ใช้ได้เฉพาะตอนพัฒนาในเครื่อง)
+
+
+==========================================================================
+ การนำไปใช้งานจริงบน domain มหาวิทยาลัย (Production) — สำคัญมาก
+==========================================================================
+ก่อนเปิดให้นักศึกษา/บุคลากรใช้งานจริงบน domain ของ กม. ต้องตั้งค่าต่อไปนี้
+ให้ครบ ไม่งั้นระบบจะไม่ปลอดภัย หรือใช้งานไม่ได้:
+
+1) ตั้งรหัสผ่าน admin ของจริง (ห้ามปล่อยเป็น admin/admin)
+   - สร้างไฟล์ portfolio-reviewer/.env (คัดลอกจาก .env.example)
+   - ใส่ค่า:  ADMIN_PASSWORD=รหัสผ่านที่ตั้งเอง
+   - ถ้าไม่ตั้งไว้ ระบบจะสุ่มรหัสผ่านให้และพิมพ์ออกทาง log ตอนรันครั้งแรกครั้งเดียว
+     (ต้องคอยดู log ตอน deploy ครั้งแรก ไม่งั้นจะไม่รู้รหัส)
+   - ถ้าเคยรันด้วย admin/admin มาก่อนแล้วมาตั้ง ADMIN_PASSWORD ทีหลัง ระบบจะ
+     ตรวจพบว่ายังเป็นรหัส default อยู่ และอัปเดตให้อัตโนมัติตอนรันครั้งถัดไป
+
+2) ตั้งค่า SESSION_SECRET (บังคับ — ระบบจะไม่ยอมสตาร์ทถ้าไม่ตั้งตอน production)
+   - สร้างค่าแบบสุ่มด้วยคำสั่ง:
+        node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+   - ใส่ผลลัพธ์ลงใน .env → SESSION_SECRET=...........
+
+3) ตั้ง NODE_ENV=production
+   - จำเป็นเพื่อให้ cookie เป็น secure (ใช้ได้เฉพาะผ่าน HTTPS) และเปิดการ
+     บังคับตรวจ SESSION_SECRET ตามข้อ 2
+
+4) ต้องมี HTTPS (reverse proxy เช่น nginx อยู่หน้าระบบ)
+   - โค้ดตั้ง `trust proxy` ให้อัตโนมัติเมื่อ NODE_ENV=production แล้ว
+   - ถ้าไม่มี HTTPS จริง cookie login จะไม่ถูกตั้งค่า (ผู้ใช้ login ไม่ติด)
+
+5) ห้ามเปิด port 8099 (Python AI backend) ออกอินเทอร์เน็ตโดยตรง
+   - ให้ bind เฉพาะ localhost ของเครื่อง server เดียวกับที่รัน Express
+     (หรือปิดกั้นด้วย firewall) เพราะ endpoint /history/{id} ของ Python
+     ส่งข้อมูลที่ถอดจาก OCR แบบเต็ม กลับไปโดยไม่กรอง — ควรเข้าถึงได้เฉพาะ
+     ผ่าน Express proxy เท่านั้น
+   - ถ้าจำเป็นต้องเปิดเข้าถึงจากเครื่องอื่น ให้ตั้งค่า CORS_ORIGINS ใน .env
+     (root) ให้เป็น domain จริงของ กม. เท่านั้น เช่น:
+        CORS_ORIGINS=["https://portfolio.fte.kmutnb.ac.th"]
+     ห้ามปล่อยเป็น ["*"] ตอนใช้งานจริง
+
+6) ตั้ง PYTHON_API_URL ใน portfolio-reviewer/.env ให้ชี้ไปยัง Python backend
+   ที่รันอยู่จริง (ปกติคือ http://localhost:8099 ถ้ารันบนเครื่องเดียวกัน)
+
+7) รันแบบ production (ไม่ใช่ dev server):
+        cd portfolio-reviewer
+        npm run build
+        npm start
+   (ไม่ต้องใช้ `npm run dev:all` ตอน production เพราะนั่นคือโหมดพัฒนา)
+
+
+ตัวแปรสภาพแวดล้อม (Environment Variables) สรุปทั้งหมด
+--------------------------------------------------------------------------
+  root/.env  (Python AI backend)
+    OLLAMA_API_URL         ที่อยู่ Ollama (ปกติ http://localhost:11434/api/generate)
+    VISION_MODEL_NAME      โมเดล vision (qwen2.5vl:7b)
+    SYNTHESIS_MODEL_NAME    โมเดลสรุปผล (qwen2.5vl:7b)
+    POPPLER_PATH           path ของ Poppler
+    CORS_ORIGINS           *** ตั้งเป็น domain จริงก่อนใช้งานจริง ***
+    HOST / PORT            0.0.0.0 / 8099
+
+  portfolio-reviewer/.env  (เว็บแอปหลัก)
+    PORT                   3000
+    NODE_ENV               *** ตั้งเป็น production ก่อนใช้งานจริง ***
+    SESSION_SECRET         *** บังคับตั้งก่อนใช้งานจริง ***
+    ADMIN_PASSWORD         *** ตั้งก่อนใช้งานจริง (ห้าม admin/admin) ***
+    PYTHON_API_URL         http://localhost:8099 (ที่อยู่ Python backend)
+
+
+รายการที่แก้ไปแล้วในรอบนี้
+--------------------------------------------------------------------------
+  [แก้แล้ว] บั๊กชื่อไฟล์ภาษาไทยเพี้ยนตอนอัปโหลด (multer อ่าน charset ผิด)
+  [แก้แล้ว] หน้าเว็บหลัก เรียก Python API ตรง ๆ แบบ hardcode localhost:8099
+            → เปลี่ยนให้เรียกผ่าน Express proxy (/api/...) แทน
+  [แก้แล้ว] รหัสผ่าน admin/admin ตายตัว → ตั้งผ่าน ADMIN_PASSWORD ได้แล้ว
+  [แก้แล้ว] SESSION_SECRET hardcode ในซอร์สโค้ด → บังคับตั้งค่าก่อนรันจริง
+  [แก้แล้ว] เพิ่ม requirements.txt สำหรับฝั่ง Python (ไม่มีมาก่อน)
+  [แก้แล้ว] README.md/.env.example/render.yaml ที่อ้างอิง Ollama/llama3.2
+            แบบผิด (Node server ไม่เคยเรียก Ollama ตรง ๆ) → แก้เป็นข้อมูลจริง
+
+
+รายการที่ยังไม่ได้แก้ (รู้ไว้ก่อนใช้งานจริง)
+--------------------------------------------------------------------------
+  - ไฟล์เก่าที่เคยอัปโหลดไว้ 1 ไฟล์ (ก่อนแก้บั๊ก) ชื่อไฟล์เพี้ยนถาวรแล้ว
+    กู้คืนชื่อเดิมไม่ได้ (ข้อมูลไฟล์จริงไม่เสียหาย ลบ/อัปโหลดใหม่ได้ตามปกติ)
+  - endpoint GET /history/{id} ของ Python backend ยังคืนข้อความ OCR เต็ม
+    (_debug_extracted_text) แบบไม่กรอง — ควรอยู่หลัง Express proxy เท่านั้น
+    (ดูข้อ 5 ในหัวข้อ Production ด้านบน) ไม่ควรเปิดเข้าถึงจากภายนอกโดยตรง
+  - ยังใช้ SQLite ธรรมดา ยังไม่มีระบบ backup/ลบข้อมูลอัตโนมัติตามระยะเวลา —
+    ถ้าต้องเก็บ/ลบข้อมูลนักศึกษาให้สอดคล้องกับ พ.ร.บ. PDPA ควรวางนโยบาย
+    เก็บรักษาข้อมูล (data retention) เพิ่มเติม
