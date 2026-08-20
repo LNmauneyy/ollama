@@ -27,7 +27,10 @@ class Settings(BaseSettings):
     synthesis_model_name: str = "qwen2.5vl:7b"
 
     # ── PDF processing ──────────────────────────────────────────────────
-    poppler_path: str = r"C:\poppler\bin"
+    # None = ค้นหา poppler จาก PATH ของระบบ (ค่าเริ่มต้นที่ใช้ได้บน macOS/Linux
+    # หากติดตั้งผ่าน `brew install poppler` หรือ package manager)
+    # บน Windows ที่ poppler มักไม่อยู่ใน PATH ให้ตั้งค่านี้ใน .env เช่น C:\poppler\bin
+    poppler_path: str | None = None
     max_file_size_mb: int = 30
     max_pages: int = 15
 

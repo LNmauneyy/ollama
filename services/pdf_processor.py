@@ -90,7 +90,7 @@ async def validate_and_convert_pdf(
     try:
         all_images = convert_from_bytes(
             pdf_content,
-            poppler_path=settings.poppler_path,
+            poppler_path=settings.poppler_path or None,
             dpi=150,
         )
     except PDFInfoNotInstalledError:
