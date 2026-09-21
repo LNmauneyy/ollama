@@ -10,7 +10,7 @@ import aiRouter from './ai.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 // Required when running behind a reverse proxy (nginx/Apache in front of the
 // university domain) so Express trusts X-Forwarded-Proto and secure cookies

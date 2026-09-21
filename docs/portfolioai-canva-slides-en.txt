@@ -1,0 +1,81 @@
+PortfolioAI — Canva Slide Text (English)
+Template: "poobes_webced" copy (7 pages). Pages 2 (Member) and 7 (Thank You) are left as-is.
+
+=================================================
+PAGE 1 — Title
+=================================================
+
+Title (black text):
+PortfolioAI: An AI Portfolio Review System
+
+Title (green highlighted text):
+Using Vision-Language Models to Give Students
+Faster, More Consistent Feedback
+
+Subtitle:
+An AI vision system that reads student portfolio PDFs page by page
+and gives structured feedback before final submission.
+
+=================================================
+PAGE 3 — Background / Rationale
+=================================================
+
+[Background]
+The Computer Education Department portfolio review process still
+relies on advisors manually reading every page before students can
+submit. This takes significant time on both sides and quality issues
+— missing sections, unclear presentation — can go unnoticed.
+
+[Rationale]
+This project therefore develops a tool that uses a vision-language
+model to automatically read and evaluate each portfolio page, giving
+students fast, preliminary feedback before submitting the real thing.
+
+=================================================
+PAGE 4 — Project Objectives (5 cards)
+=================================================
+
+[Portfolio Upload & Login]
+Build a web app where students log in and upload PDF portfolios for analysis.
+
+[AI Vision Analysis]
+Use a vision-language model (qwen2.5vl) via Ollama to read every page.
+
+[Structured Synthesis]
+Combine all page results into one structured evaluation summary.
+
+[Analysis History]
+Store every analysis so students and advisors can review it later.
+
+[Secure Architecture]
+Separate the AI backend from the web app for safe real-world deployment.
+
+=================================================
+PAGE 5 — Project Procedures (Phase 1-4)
+=================================================
+
+[Phase 1]
+- Study the existing manual portfolio review process.
+- Define project scope and success metrics.
+
+[Phase 2]
+- Connect to Ollama and convert PDF pages to images.
+- Build the vision-reading and synthesis pipeline.
+
+[Phase 3]
+- Build the login, upload, and analysis-history pages.
+- Connect the web app to the AI backend through a secure proxy.
+
+[Phase 4]
+- Test analysis accuracy, security, and real-world usage.
+- Prepare the final report and project presentation.
+
+=================================================
+PAGE 6 — Expected Benefits (5 lines)
+=================================================
+
+Students can check their portfolio quality before submitting it.
+Advisors spend less time on basic review, more on in-depth feedback.
+AI reads every page and gives feedback within minutes.
+Every analysis is saved so students and advisors can review it later.
+Shows a practical way to apply vision-language models to document review.

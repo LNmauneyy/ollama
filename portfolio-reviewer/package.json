@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:server": "node server/index.js",
-    "dev:all": "concurrently \"npm run dev\" \"npm run dev:server\"",
+    "dev:server": "node --env-file=.env server/index.js",
+    "dev:python": "cd .. && python main.py",
+    "dev:all": "concurrently -n web,api,ai -c blue,green,magenta \"npm run dev\" \"npm run dev:server\" \"npm run dev:python\"",
     "build": "vite build",
-    "start": "node server/index.js",
+    "start": "node --env-file=.env server/index.js",
     "lint": "oxlint",
     "preview": "vite preview"
   },

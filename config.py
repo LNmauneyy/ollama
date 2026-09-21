@@ -42,13 +42,16 @@ class Settings(BaseSettings):
     max_concurrent_pages: int = 3
 
     # ── CORS ────────────────────────────────────────────────────────────
-    cors_origins: list[str] = ["*"]
+    # The browser only talks to the Express proxy. Keep this empty unless a
+    # separately hosted, trusted client must call this private API directly.
+    cors_origins: list[str] = []
 
     # ── History storage (SQLite) ────────────────────────────────────────
     database_path: str = "history.db"
 
     # ── Server ──────────────────────────────────────────────────────────
-    host: str = "0.0.0.0"
+    # Keep the unauthenticated AI service private to the local machine.
+    host: str = "127.0.0.1"
     port: int = 8099
 
 

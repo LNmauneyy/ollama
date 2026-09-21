@@ -5,7 +5,7 @@ Two-stage pipeline:
 2. Synthesis stage: Combine all descriptions → extract structured JSON evaluation
 
 Usage:
-    python main.py          # Start on 0.0.0.0:8099 (or as configured in .env)
+    python main.py          # Start on 127.0.0.1:8099 (or as configured in .env)
     uvicorn main:app        # Via uvicorn directly
 """
 
@@ -81,7 +81,7 @@ async def analyze_portfolio(file: UploadFile = File(...)):
     """
     result, failed_pages = await analyze_portfolio_pipeline(file)
 
-    if failed_pages and "_debug_synthesis_error" in result:
+    if failed_pages and "_synthesis_error" in result:
         # Vision succeeded partially, but synthesis failed entirely
         raise HTTPException(
             status_code=500,
@@ -89,7 +89,7 @@ async def analyze_portfolio(file: UploadFile = File(...)):
                 "error": "Synthesis failed",
                 "detail": "ระบบไม่สามารถสรุปผล JSON ได้ — อาจเกิดจากข้อความไม่สมบูรณ์",
                 "failed_pages": failed_pages,
-                "synthesis_error": result.get("_debug_synthesis_error"),
+                "synthesis_error": result.get("_synthesis_error"),
             },
         )
 

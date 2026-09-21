@@ -1,0 +1,481 @@
+<title>PortfolioAI Project Brief</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@500;700&family=Sarabun:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --paper:#faf9f4;
+    --sheet:#ffffff;
+    --ink:#20242b;
+    --ink-soft:#565f6b;
+    --line:#d9d2c0;
+    --line-soft:#e7e2d4;
+    --accent:#1d4e89;
+    --accent-deep:#123a61;
+    --accent-tint:#eaf1f8;
+    --tag-bg:#f1efe6;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#14171c;
+      --sheet:#1b1f26;
+      --ink:#e9e7df;
+      --ink-soft:#a8afba;
+      --line:#333b46;
+      --line-soft:#2a313b;
+      --accent:#7fb0e6;
+      --accent-deep:#a9cdf2;
+      --accent-tint:#1c2733;
+      --tag-bg:#22262e;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#14171c;
+    --sheet:#1b1f26;
+    --ink:#e9e7df;
+    --ink-soft:#a8afba;
+    --line:#333b46;
+    --line-soft:#2a313b;
+    --accent:#7fb0e6;
+    --accent-deep:#a9cdf2;
+    --accent-tint:#1c2733;
+    --tag-bg:#22262e;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Sarabun","Noto Sans Thai",system-ui,sans-serif;
+    display:flex;
+    justify-content:center;
+    padding:36px 16px 64px;
+  }
+
+  .sheet{
+    width:100%;
+    max-width:210mm;
+    background:var(--sheet);
+    border:1px solid var(--line);
+    box-shadow:0 1px 3px rgba(0,0,0,.06), 0 12px 32px -20px rgba(0,0,0,.25);
+    padding:20mm 18mm 16mm;
+  }
+
+  /* ---------- masthead ---------- */
+  .masthead{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:16px;
+    padding-bottom:12px;
+    border-bottom:2px solid var(--accent);
+  }
+  .masthead .inst{
+    font-size:13px;
+    line-height:1.55;
+    color:var(--ink-soft);
+  }
+  .masthead .inst strong{
+    display:block;
+    color:var(--ink);
+    font-weight:600;
+    font-size:14px;
+  }
+  .doc-tag{
+    font-family:"Sarabun",sans-serif;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--accent);
+    background:var(--accent-tint);
+    border:1px solid var(--accent);
+    border-radius:3px;
+    padding:4px 10px;
+    white-space:nowrap;
+  }
+
+  /* ---------- title block ---------- */
+  .title-block{
+    padding:26px 0 22px;
+    border-bottom:1px solid var(--line);
+  }
+  h1{
+    font-family:"Noto Serif Thai",serif;
+    font-weight:700;
+    font-size:clamp(22px,3.4vw,30px);
+    line-height:1.35;
+    margin:0 0 6px;
+    text-wrap:balance;
+  }
+  .title-en{
+    font-size:14.5px;
+    color:var(--ink-soft);
+    font-style:italic;
+  }
+
+  /* ---------- field grid ---------- */
+  .fields{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0;
+    margin-top:18px;
+    border:1px solid var(--line);
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .field{
+    padding:10px 14px;
+    border-right:1px solid var(--line-soft);
+    border-bottom:1px solid var(--line-soft);
+  }
+  .field:nth-child(2n){border-right:none;}
+  .field-label{
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin-bottom:3px;
+  }
+  .field-value{
+    font-size:14px;
+    color:var(--ink);
+    min-height:20px;
+  }
+  .blank{
+    display:inline-block;
+    min-width:100%;
+    border-bottom:1px dotted var(--ink-soft);
+    height:16px;
+  }
+
+  /* ---------- sections ---------- */
+  section{
+    padding:22px 0;
+    border-bottom:1px solid var(--line-soft);
+  }
+  section:last-of-type{border-bottom:none;}
+  .sec-head{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    margin-bottom:10px;
+  }
+  .sec-num{
+    font-family:"Noto Serif Thai",serif;
+    font-weight:700;
+    font-size:15px;
+    color:var(--accent);
+  }
+  h2{
+    font-family:"Noto Serif Thai",serif;
+    font-weight:700;
+    font-size:16.5px;
+    margin:0;
+    color:var(--ink);
+  }
+  p{
+    font-size:14px;
+    line-height:1.85;
+    color:var(--ink);
+    max-width:66ch;
+    margin:0 0 10px;
+  }
+  ul{
+    margin:0;
+    padding-left:20px;
+  }
+  li{
+    font-size:14px;
+    line-height:1.8;
+    color:var(--ink);
+    max-width:64ch;
+    margin-bottom:6px;
+  }
+  li::marker{color:var(--accent);}
+
+  /* ---------- tech stack ---------- */
+  .stack{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:14px;
+    margin-top:4px;
+  }
+  .stack-group{
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:12px 14px;
+    background:var(--paper);
+  }
+  .stack-group h3{
+    font-size:11.5px;
+    font-weight:600;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin:0 0 8px;
+  }
+  .tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+  }
+  .tag{
+    font-size:12px;
+    font-weight:500;
+    background:var(--tag-bg);
+    color:var(--ink);
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:3px 8px;
+    white-space:nowrap;
+  }
+
+  /* ---------- timeline ---------- */
+  .timeline{
+    list-style:none;
+    padding:0;
+    margin:4px 0 0;
+    counter-reset:phase;
+  }
+  .timeline li{
+    counter-increment:phase;
+    position:relative;
+    padding:2px 0 16px 30px;
+    border-left:1.5px solid var(--line);
+    max-width:none;
+  }
+  .timeline li:last-child{
+    border-left:1.5px solid transparent;
+    padding-bottom:0;
+  }
+  .timeline li::before{
+    content:counter(phase);
+    position:absolute;
+    left:-11.5px;
+    top:1px;
+    width:21px;
+    height:21px;
+    border-radius:50%;
+    background:var(--sheet);
+    border:1.5px solid var(--accent);
+    color:var(--accent);
+    font-size:11px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:"Sarabun",sans-serif;
+  }
+  .timeline .phase-name{
+    font-weight:600;
+    font-size:14px;
+    color:var(--ink);
+    display:block;
+    margin-bottom:2px;
+  }
+  .timeline .phase-desc{
+    font-size:13.5px;
+    color:var(--ink-soft);
+    line-height:1.7;
+  }
+
+  /* ---------- signatures ---------- */
+  .signatures{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:28px;
+    margin-top:8px;
+  }
+  .sig-box{text-align:center;}
+  .sig-line{
+    border-bottom:1px dotted var(--ink-soft);
+    height:40px;
+    margin-bottom:8px;
+  }
+  .sig-role{
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+  .sig-date{
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:14px;
+  }
+
+  footer{
+    margin-top:18px;
+    padding-top:12px;
+    border-top:1px solid var(--line-soft);
+    font-size:11px;
+    color:var(--ink-soft);
+    display:flex;
+    justify-content:space-between;
+  }
+
+  @media (max-width:640px){
+    .sheet{padding:8mm 6mm;}
+    .fields{grid-template-columns:1fr;}
+    .field:nth-child(2n){border-right:1px solid var(--line-soft);}
+    .stack{grid-template-columns:1fr;}
+    .signatures{grid-template-columns:1fr;}
+    .masthead{flex-direction:column;align-items:flex-start;}
+  }
+
+  @media print{
+    body{padding:0;background:#fff;}
+    .sheet{
+      box-shadow:none;
+      border:none;
+      max-width:none;
+      width:100%;
+      padding:0;
+    }
+    section{break-inside:avoid;}
+    @page{size:A4;margin:16mm 14mm;}
+  }
+</style>
+
+<div class="sheet">
+
+  <div class="masthead">
+    <div class="inst">
+      <strong>มหาวิทยาลัยเทคโนโลยีพระจอมเกล้าพระนครเหนือ</strong>
+      คณะครุศาสตร์อุตสาหกรรม (Faculty of Technical Education)
+    </div>
+    <div class="doc-tag">เอกสารสรุปโครงงาน · Project Brief</div>
+  </div>
+
+  <div class="title-block">
+    <h1>PortfolioAI: ระบบวิเคราะห์และให้ข้อเสนอแนะแฟ้มสะสมผลงานด้วยปัญญาประดิษฐ์</h1>
+    <div class="title-en">PortfolioAI — AI-Assisted Portfolio Review System</div>
+  </div>
+
+  <div class="fields">
+    <div class="field">
+      <div class="field-label">ผู้จัดทำ</div>
+      <div class="field-value"><span class="blank"></span></div>
+    </div>
+    <div class="field">
+      <div class="field-label">อาจารย์ที่ปรึกษา</div>
+      <div class="field-value"><span class="blank"></span></div>
+    </div>
+    <div class="field">
+      <div class="field-label">สาขาวิชา</div>
+      <div class="field-value"><span class="blank"></span></div>
+    </div>
+    <div class="field">
+      <div class="field-label">ภาคการศึกษา / ปีการศึกษา</div>
+      <div class="field-value"><span class="blank"></span></div>
+    </div>
+  </div>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">1.</span><h2>หลักการและเหตุผล</h2></div>
+    <p>
+      ก่อนสำเร็จการศึกษา นักศึกษาต้องจัดทำแฟ้มสะสมผลงาน (portfolio) เพื่อประกอบการสมัครงานหรือศึกษาต่อ
+      แต่การตรวจสอบคุณภาพเนื้อหาก่อนส่งจริง เช่น ความครบถ้วนของหัวข้อ ความชัดเจนของการนำเสนอผลงาน
+      มักทำด้วยการอ่านตรวจด้วยมือทีละหน้า ใช้เวลานานทั้งฝั่งนักศึกษาและอาจารย์ที่ปรึกษา
+      และอาจตกหล่นจุดที่ควรปรับปรุง โครงงานนี้จึงพัฒนาเครื่องมือที่ใช้แบบจำลองปัญญาประดิษฐ์เชิงภาพ
+      (Vision-Language Model) อ่านและประเมินเนื้อหาพอร์ตโฟลิโอแต่ละหน้าโดยอัตโนมัติ
+      เพื่อให้ข้อเสนอแนะเบื้องต้นได้อย่างรวดเร็ว ก่อนนำไปปรับปรุงและส่งจริง
+    </p>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">2.</span><h2>วัตถุประสงค์</h2></div>
+    <ul>
+      <li>พัฒนาเว็บแอปพลิเคชันที่ให้ผู้ใช้เข้าสู่ระบบและอัปโหลดไฟล์พอร์ตโฟลิโอ (PDF) เพื่อขอรับการวิเคราะห์</li>
+      <li>ประยุกต์ใช้แบบจำลอง AI เชิงภาพ (qwen2.5vl) ผ่าน Ollama อ่านเนื้อหาแต่ละหน้า แล้วสังเคราะห์เป็นผลสรุปเชิงโครงสร้าง</li>
+      <li>จัดเก็บประวัติผลการวิเคราะห์ ให้ผู้ใช้เรียกย้อนดูภายหลังได้</li>
+      <li>ออกแบบสถาปัตยกรรมให้ปลอดภัยเพียงพอสำหรับใช้งานจริงในระดับคณะ โดยแยกชั้นเว็บแอปกับ AI backend ออกจากกัน</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">3.</span><h2>ขอบเขตของโครงงาน</h2></div>
+    <ul>
+      <li>รองรับไฟล์ PDF ขนาดไม่เกิน 30MB และไม่เกิน 15 หน้าต่อไฟล์</li>
+      <li>แปลงแต่ละหน้าของ PDF เป็นภาพด้วย Poppler แล้วส่งให้แบบจำลอง vision ประมวลผลทีละหน้าแบบจำกัดจำนวนพร้อมกัน</li>
+      <li>สังเคราะห์ผลลัพธ์รายหน้าเป็นผลสรุปภาพรวม 1 ชุดต่อไฟล์ พร้อมบันทึกประวัติลงฐานข้อมูล</li>
+      <li>มีระบบสมาชิก (เข้าสู่ระบบ) สำหรับควบคุมการเข้าถึง</li>
+      <li>ไม่ครอบคลุม: การฝึกแบบจำลอง AI ขึ้นใหม่, การวิเคราะห์ไฟล์รูปแบบอื่นนอกจาก PDF, การใช้งานพร้อมกันจำนวนมากระดับองค์กร</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">4.</span><h2>เทคโนโลยีที่ใช้</h2></div>
+    <div class="stack">
+      <div class="stack-group">
+        <h3>AI / Backend</h3>
+        <div class="tags">
+          <span class="tag">Python</span>
+          <span class="tag">FastAPI</span>
+          <span class="tag">Ollama</span>
+          <span class="tag">qwen2.5vl:7b</span>
+          <span class="tag">pdf2image</span>
+          <span class="tag">Poppler</span>
+        </div>
+      </div>
+      <div class="stack-group">
+        <h3>เว็บแอปพลิเคชัน</h3>
+        <div class="tags">
+          <span class="tag">Node.js</span>
+          <span class="tag">Express</span>
+          <span class="tag">React</span>
+          <span class="tag">Vite</span>
+        </div>
+      </div>
+      <div class="stack-group">
+        <h3>ข้อมูล / ความปลอดภัย</h3>
+        <div class="tags">
+          <span class="tag">SQLite</span>
+          <span class="tag">express-session</span>
+          <span class="tag">bcryptjs</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">5.</span><h2>แผนการดำเนินงาน</h2></div>
+    <ol class="timeline">
+      <li><span class="phase-name">ศึกษาและวิเคราะห์ความต้องการ</span><span class="phase-desc">ทบทวนกระบวนการตรวจพอร์ตโฟลิโอเดิม กำหนดขอบเขตและตัวชี้วัดความสำเร็จ</span></li>
+      <li><span class="phase-name">ออกแบบสถาปัตยกรรมระบบ</span><span class="phase-desc">ออกแบบการแบ่งชั้น AI backend / เว็บแอป และรูปแบบข้อมูลผลวิเคราะห์</span></li>
+      <li><span class="phase-name">พัฒนา AI Backend</span><span class="phase-desc">เชื่อมต่อ Ollama ประมวลผล PDF เป็นภาพ และสังเคราะห์ผลสรุป</span></li>
+      <li><span class="phase-name">พัฒนาเว็บแอปพลิเคชัน</span><span class="phase-desc">ระบบเข้าสู่ระบบ อัปโหลดไฟล์ แสดงผลวิเคราะห์และประวัติ</span></li>
+      <li><span class="phase-name">ทดสอบระบบ</span><span class="phase-desc">ทดสอบความถูกต้องของผลวิเคราะห์ ความปลอดภัย และการใช้งานจริง</span></li>
+      <li><span class="phase-name">จัดทำเอกสารและนำเสนอ</span><span class="phase-desc">สรุปผลการดำเนินงาน จัดทำรายงานฉบับสมบูรณ์ และนำเสนอโครงงาน</span></li>
+    </ol>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">6.</span><h2>ผลที่คาดว่าจะได้รับ</h2></div>
+    <ul>
+      <li>ระบบต้นแบบที่ช่วยให้นักศึกษาตรวจสอบพอร์ตโฟลิโอเบื้องต้นได้ด้วยตนเองก่อนส่งจริง</li>
+      <li>ลดภาระอาจารย์ที่ปรึกษาในการตรวจสอบเบื้องต้น ให้เหลือเฉพาะการให้คำแนะนำเชิงลึก</li>
+      <li>แนวทางการประยุกต์ใช้ Vision-Language Model กับงานประเมินเอกสารในบริบทอื่นต่อไป</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">7.</span><h2>ลงนาม</h2></div>
+    <div class="signatures">
+      <div class="sig-box">
+        <div class="sig-line"></div>
+        <div class="sig-role">ผู้จัดทำโครงงาน</div>
+        <div class="sig-date">วันที่ ....... / ....... / .......</div>
+      </div>
+      <div class="sig-box">
+        <div class="sig-line"></div>
+        <div class="sig-role">อาจารย์ที่ปรึกษาโครงงาน</div>
+        <div class="sig-date">วันที่ ....... / ....... / .......</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>PortfolioAI — เอกสารสรุปโครงงาน</span>
+    <span>หน้า 1/1</span>
+  </footer>
+
+</div>
